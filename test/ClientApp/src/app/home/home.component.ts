@@ -23,11 +23,7 @@ export class HomeComponent implements OnInit {
     public passangersInElevator: Passenger[] = new Array<Passenger>();
     private container = new PIXI.Container();
 
-    delay(ms: number) {
-        return new Promise( resolve => setTimeout(resolve, ms) );
-    }
-
-    ngOnInit() {
+    async ngOnInit() {
 
         document.body.appendChild(this.app.view);
         this.addPassenger(1, true, 5);
@@ -44,7 +40,12 @@ export class HomeComponent implements OnInit {
         //       setTimeout(() => {this.elevator.goto(1); return; }, 3000);
         // });
         this.elevator.goTo(3);
+        await delay(4400);
         this.elevator.goTo(4);
+        await delay(4400);
+        this.elevator.goTo(1);
+        await delay(4400);
+        this.elevator.goTo(0);
         // let coords = {x: 28, y: 0};
         // new TWEEN.Tween(coords).to({ y: 80}, 3000)
         //     .onStart(() => console.log('s'))
@@ -59,6 +60,10 @@ export class HomeComponent implements OnInit {
         // tween.start();
         // // console.log(TWEEN);
         // tween.update();
+    }
+
+    delay(ms: number) {
+        return new Promise( resolve => setTimeout(resolve, ms) );
     }
 
     addPassenger(floorNumber: number, isUp: boolean, floorDirection: number) {

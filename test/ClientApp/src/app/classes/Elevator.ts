@@ -25,6 +25,8 @@ export class Elevator extends PIXI.Graphics {
     }
 
     drawElevator(x: number, y: number) {
+        this.e_y = y;
+        this.e_x = x;
         this.lineStyle(4, 0x71b5ff, 1);
         this.moveTo(x, y);
         this.lineTo(x + this.widthPassanger, y);
@@ -42,12 +44,6 @@ export class Elevator extends PIXI.Graphics {
     }
 
     goTo(floorNumber: number) {
-        
-        this.queue.push(floorNumber);
-        
-    }
-
-    animate(floorNumber: number) {
         let coords = {x: this.e_x, y: this.e_y};
         this.animation = new TWEEN.Tween(coords)
             .to({ y: 80 * floorNumber - this.currentFloor}, 1000 * Math.abs(this.currentFloor - floorNumber))
@@ -55,5 +51,10 @@ export class Elevator extends PIXI.Graphics {
             .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate(() => {this.clear(); this.drawElevator(coords.x, coords.y); })
         this.animation.start();
+        this.currentFloor = floorNumber;
+    }
+
+    animate(floorNumber: number) {
+        
     }
 }
