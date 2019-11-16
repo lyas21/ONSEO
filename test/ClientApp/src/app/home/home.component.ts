@@ -12,6 +12,16 @@ import { Tween } from '@tweenjs/tween.js';
     templateUrl: './home.component.html',
 })
 
+// class floor {
+//     id: number;
+//     name: floor;
+//     getInfo(): string {
+//         return "id:" + this.id;
+//     }
+//     let first: floor = new floor();
+//     floor.id = 
+// }
+
 export class HomeComponent implements OnInit {
 
     public floorsCount = 6;
@@ -26,26 +36,33 @@ export class HomeComponent implements OnInit {
     async ngOnInit() {
 
         document.body.appendChild(this.app.view);
-        this.addPassenger(1, true, 5);
-        this.addPassenger(4, false, 1);
+        this.addPassenger(1, true, 5, 0);
+        this.addPassenger(4, false, 1, 0);
         this.render();
 
         this.animate(undefined);
-        // tslint:disable-next-line: no-unused-expression
-        // new Promise(function(resolve, reject) {
-        //     setTimeout(() => {this.elevator.goto(3); resolve(); }, 3000);
-        // }).then(function() {
-        //     setTimeout(() => {return; }, 800);
-        // }).then(function() {
-        //       setTimeout(() => {this.elevator.goto(1); return; }, 3000);
-        // });
-        this.elevator.goTo(3);
-        await delay(4400);
-        this.elevator.goTo(4);
-        await delay(4400);
-        this.elevator.goTo(1);
-        await delay(4400);
-        this.elevator.goTo(0);
+
+        for (let i = 0; i < this.passengers.length; i++) {
+            this.passengers[i].goToElevator();
+        }
+
+        console.log(new Date());
+        await delay(1000);
+        console.log(new Date());
+
+
+
+        await this.elevator.goTo(3);
+        await this.elevator.goTo(2);
+        // await delay(800);
+        // this.elevator.goTo(4);
+        // await delay(800);
+        // this.elevator.goTo(1);
+        // await delay(800);
+        // this.elevator.goTo(0);
+        // await delay(800);
+
+
         // let coords = {x: 28, y: 0};
         // new TWEEN.Tween(coords).to({ y: 80}, 3000)
         //     .onStart(() => console.log('s'))
@@ -62,12 +79,26 @@ export class HomeComponent implements OnInit {
         // tween.update();
     }
 
+
+
+    // async ngOnInit() {
+
+    //     document.body.appendChild(this.app.view);
+    //     this.addPassenger(1, true, 5);
+    //     this.addPassenger(4, false, 1);
+    //     this.render();
+
+    //     this.animate(undefined);
+
+    //     this.passenger.goTo(4);
+    // }
+
     delay(ms: number) {
         return new Promise( resolve => setTimeout(resolve, ms) );
     }
 
-    addPassenger(floorNumber: number, isUp: boolean, floorDirection: number) {
-        const passanger = new Passenger(672, ((floorNumber - 1) * 80 + 16), isUp, floorDirection);
+    addPassenger(floorNumber: number, isUp: boolean, floorDirection: number, queuePos: number) {
+        const passanger = new Passenger(672, ((floorNumber - 1) * 80 + 16), isUp, floorDirection, queuePos);
         this.passengers.push(passanger);
     }
 
@@ -76,7 +107,7 @@ export class HomeComponent implements OnInit {
         this.drawElevator();
 
         for (let i = 0; i < this.passengers.length; i++) {
-            this.passengers[i].drawPassanger();
+            this.passengers[i].drawPassanger(this.passengers[i].p_x, this.passengers[i].p_y);
             this.container.addChild(<PIXI.Graphics>this.passengers[i]);
         }
         this.container.addChild(<PIXI.Graphics>this.elevator);

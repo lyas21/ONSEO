@@ -1,6 +1,5 @@
 import * as TWEEN from 'tween.js/src/Tween.js';
 import * as PIXI from 'pixi.js';
-import { Tween } from '@tweenjs/tween.js';
 
 export class Elevator extends PIXI.Graphics {
 
@@ -43,18 +42,25 @@ export class Elevator extends PIXI.Graphics {
         return this.render(this.rend);
     }
 
-    goTo(floorNumber: number) {
+    async goTo(floorNumber: number) {
         let coords = {x: this.e_x, y: this.e_y};
+        let floorDiff = this.currentFloor - floorNumber;
+        const velocity = 1000 * Math.abs(floorDiff);
+        this.isUp = floorDiff < 0;
         this.animation = new TWEEN.Tween(coords)
-            .to({ y: 80 * floorNumber - this.currentFloor}, 1000 * Math.abs(this.currentFloor - floorNumber))
+            .to({ y: 80 * floorNumber - this.currentFloor}, velocity)
             .onStart(() => console.log('s'))
             .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {this.clear(); this.drawElevator(coords.x, coords.y); })
+            .onUpdate(() => {this.clear(); this.drawElevator(coords.x, coords.y); });
         this.animation.start();
         this.currentFloor = floorNumber;
+        await this.delay(velocity);
     }
 
     animate(floorNumber: number) {
-        
+    }
+
+    delay(ms: number) {
+        return new Promise( resolve => setTimeout(resolve, ms) );
     }
 }
